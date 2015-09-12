@@ -1,142 +1,126 @@
 package com.example.dexter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import com.google.gson.JsonElement;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
-import android.util.SparseBooleanArray;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class DLocation extends Activity {
 
 	Button select;
-    
-    
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dlocation);
-
-        TextView location = (TextView)findViewById(R.id.destination);
-        
-        
-        
-        // adding
-        
-        select = (Button) findViewById(R.id.button1);
-       
-       /*  select.setOnClickListener(new OnClickListener()
-        {
-
-            @Override
-            public void onClick(View v) {
-                    StringBuilder checkedcontacts= new StringBuilder();
-
-                for(int i = 0; i < ice_contacts.size(); i++)
-
-                    {
-                    if(ma.mCheckStates.get(i)==true)
-                    {
-                    	
-                    	Globals.ice_contacts.add(ice_contacts.get(i));
-                    	//sendSMS(ice_contacts.get(i).phone_number, "Narayana :-) Aja!");
-                         //checkedcontacts.append(name1.get(i).toString());
-                         //checkedcontacts.append("\n");
-
-                    }
-
-                }
-
-                Toast.makeText(DLocation.this, checkedcontacts,1000).show();
-                setICEContacts();
-            }
-
-			private void setICEContacts() {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(getApplicationContext(), ListICE.class);
-	            startActivity(intent);
-	            finish();
-			}       
-        }); */
 
 
-    }
-    //@Override
-    //public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-        // TODO Auto-generated method stub
-     //    ma.toggle(arg2);
-    //}
-    
-    private void sendSMS(String phoneNumber, String message)
-    {
-    SmsManager sms = SmsManager.getDefault();
-    System.out.println(phoneNumber+" "+message);
-    //sms.sendTextMessage("9538729218", null, message, null, null);
-    }
-    
-    public  void getAllContacts(ContentResolver cr) {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_dlocation);
+		
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+		StrictMode.setThreadPolicy(policy); 
+
+		final TextView location = (TextView)findViewById(R.id.destination);
+
+		// adding
+
+		select = (Button) findViewById(R.id.fetch);
+
+		select.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+		
+			System.out.println("Clicked...calling");
+						
+			Intent intent = new Intent(getApplicationContext(), Tracker.class);
+			
+			intent.putExtra("destination", "Banashankari,Banagalore");
+			
+			startActivity(intent);
+			
+			finish();
+			
+			}
+					
+		});
+
+
+
+	}
+	//@Override
+	//public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+	// TODO Auto-generated method stub
+	//    ma.toggle(arg2);
+	//}
+
 	
+
+	public  void getAllContacts(ContentResolver cr) {
+
 		System.out.println("Gets contacts");
-    	
-        Cursor phones = cr.query(ContactsContract.Contacts.CONTENT_URI, null,null,null, null);
-        
-        if (phones.getCount() > 0) {
-    	    
-        	while (phones.moveToNext()) {
-    	
-        		String id = phones.getString(phones.getColumnIndex(ContactsContract.Contacts._ID));
-        		
-        		String name=phones.getString(phones.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-        		
-        	
-       
-        		if (Integer.parseInt(phones.getString(phones.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-        		               
-        			Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",	    
-        				new String[]{id}, null);
-	      
-        			while (pCur.moveToNext()) {
-        				
-        				String phone_number  = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-        				System.out.println("Name is "+name+" no "+phone_number);
-        				
-        			//	ice_contacts.add(new ICE_Contact(name, phone_number));
-        				
-	        
-        			} 
-	        
-        			pCur.close();
-	    
-        		}
-        	}
-        }
 
-        phones.close();
-     }
+		Cursor phones = cr.query(ContactsContract.Contacts.CONTENT_URI, null,null,null, null);
+
+		if (phones.getCount() > 0) {
+
+			while (phones.moveToNext()) {
+
+				String id = phones.getString(phones.getColumnIndex(ContactsContract.Contacts._ID));
+
+				String name=phones.getString(phones.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 
 
-    
-    /*
+
+				if (Integer.parseInt(phones.getString(phones.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+
+					Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",	    
+							new String[]{id}, null);
+
+					while (pCur.moveToNext()) {
+
+						String phone_number  = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+						System.out.println("Name is "+name+" no "+phone_number);
+
+						//	ice_contacts.add(new ICE_Contact(name, phone_number));
+
+
+					} 
+
+					pCur.close();
+
+				}
+			}
+		}
+
+		phones.close();
+	}
+
+	
+	/*
     class MyAdapter extends BaseAdapter implements CompoundButton.OnCheckedChangeListener
     {  private SparseBooleanArray mCheckStates;
        LayoutInflater mInflater;
@@ -200,17 +184,17 @@ public class DLocation extends Activity {
             // TODO Auto-generated method stub
         	 mCheckStates.put((Integer) buttonView.getTag(), isChecked);
         	/*if(no_checked >= 3 ) {
-        	
+
         		buttonView.setChecked(false);
-        		
+
         		Toast.makeText(getApplicationContext(), "Max 3 contacts only",Toast.LENGTH_SHORT).show();
-        		
+
         	}else {
-        		
+
         		mCheckStates.put((Integer) buttonView.getTag(), isChecked);
-        		
+
         		no_checked++;
-        		
+
         		System.out.println(no_checked);
         	}
         }   

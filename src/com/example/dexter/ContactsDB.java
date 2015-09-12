@@ -54,6 +54,7 @@ public class ContactsDB extends SQLiteOpenHelper {
     void addContact(ICE_Contact contact) {
         SQLiteDatabase db = this.getWritableDatabase();
  
+        System.out.println("currently "+contact.getName()+" "+contact.getPhoneNumber());
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, contact.getName()); // Contact Name
         values.put(KEY_PH_NO, contact.getPhoneNumber()); // Contact Phone

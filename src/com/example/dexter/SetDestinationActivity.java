@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -49,6 +50,13 @@ public class SetDestinationActivity extends Activity implements OnItemClickListe
 	public void onItemClick(AdapterView adapterView, View view, int position, long id) {
 		        String str = (String) adapterView.getItemAtPosition(position);
 		        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(getApplicationContext(), Tracker.class);
+			
+				intent.putExtra("destination", str);
+			
+				startActivity(intent);
+			
+				finish();
 	}
 	
 	public static ArrayList autocomplete(String input) {
