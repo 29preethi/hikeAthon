@@ -35,6 +35,8 @@ public class MainActivity extends Activity implements OnItemClickListener{
 	MyAdapter ma ;
 	Button select;
 	int no_checked = 0;
+	
+	StringBuilder checkedcontacts= new StringBuilder();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +58,7 @@ public class MainActivity extends Activity implements OnItemClickListener{
 
 			@Override
 			public void onClick(View v) {
-				StringBuilder checkedcontacts= new StringBuilder();
+				
 
 				for(int i = 0; i < ice_contacts.size(); i++)
 
@@ -70,27 +72,33 @@ public class MainActivity extends Activity implements OnItemClickListener{
 						// Inserting Contacts
 						Log.d("Insert: ", "Inserting .."); 
 						db.addContact(ice_contacts.get(i));        
-
-
-						//Globals.ice_contacts.add(ice_contacts.get(i));
-						//sendSMS(ice_contacts.get(i).phone_number, "Narayana :-) Aja!");
-						//checkedcontacts.append(name1.get(i).toString());
-						//checkedcontacts.append("\n");
+						checkedcontacts.append(ice_contacts.get(i).getName()+" "+ice_contacts.get(i).getPhoneNumber()+"\n");
 
 					}
 
 				}
-
+				Log.e(null, "Before calling set destination");
+				for(ICE_Contact name : ice_contacts)
+					Log.e(null, "in ice"+name.getName());
+				Log.e(null, "Selected contatct "+checkedcontacts.toString());
 				Toast.makeText(MainActivity.this, checkedcontacts,1000).show();
-				setICEContacts();
+				//setICEContacts();
+				setDestination();
 			}
-
-			private void setICEContacts() {
+			
+			private void setDestination(){
+				Log.e(null,"Entering to set destination");
+				Intent intent = new Intent(getApplicationContext(), SetDestinationActivity.class);
+				intent.putExtra("contacts", checkedcontacts.toString());
+				startActivity(intent);
+				
+			}
+			/*private void setICEContacts() {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(getApplicationContext(), ListICE.class);
 				startActivity(intent);
 				finish();
-			}       
+			}*/       
 		});
 
 
