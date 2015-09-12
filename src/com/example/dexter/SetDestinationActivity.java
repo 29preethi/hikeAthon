@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SetDestinationActivity extends Activity implements OnItemClickListener{
@@ -35,6 +36,12 @@ public class SetDestinationActivity extends Activity implements OnItemClickListe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_setdestination);
+		
+		String selectedContacts = getIntent().getStringExtra("contacts");
+		
+		TextView contacts = (TextView) findViewById(R.id.contactsView);
+		contacts.setText(selectedContacts);
+		
 		AutoCompleteTextView autoCompView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 		autoCompView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.autocomplete_list_item));
 		autoCompView.setOnItemClickListener(this);
